@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href="/images/favicon.ico" rel="icon" type="image/ico" />
+    <title>Getting Started: Installation - Lita.io</title>
+    <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
+    <link href="/stylesheets/application-adb34666.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <nav class='navbar navbar-default navbar-static-top navbar-inverse' role='navigation'>
+      <div class='container'>
+        <a class="navbar-brand hidden-xs" href="/">Lita Documentation</a>
+        <div class='hidden-xs'><a class="btn btn-default navbar-btn navbar-right" href="https://www.lita.io/">Lita.io</a></div>
+        <div class='navbar-text navbar-right hidden-xs'></div>
+        <ul class='nav navbar-nav navbar-right'>
+          <li class='dropdown'>
+            <a href='/getting-started/'>
+              Getting Started
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/getting-started/">Overview</a></li>
+              <li><a href="/getting-started/installation/">Installation</a></li>
+              <li><a href="/getting-started/plugins/">Plugins</a></li>
+              <li><a href="/getting-started/configuration/">Configuration</a></li>
+              <li><a href="/getting-started/usage/">Usage</a></li>
+              <li><a href="/getting-started/deployment/">Deployment</a></li>
+            </ul>
+          </li>
+          <li class='dropdown'>
+            <a href='/plugin-authoring/'>
+              Plugin Authoring
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/plugin-authoring/">Overview</a></li>
+              <li><a href="/plugin-authoring/adapters/">Adapters</a></li>
+              <li><a href="/plugin-authoring/handlers/">Handlers</a></li>
+              <li><a href="/plugin-authoring/events/">Events</a></li>
+              <li><a href="/plugin-authoring/localization/">Localization</a></li>
+              <li><a href="/plugin-authoring/extensions/">Extensions</a></li>
+              <li><a href="/plugin-authoring/testing/">Testing</a></li>
+              <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class='content'>
+      <div class='container'>
+        <div class='page-header'>
+          <h1>Getting Started</h1>
+        </div>
+        <div class='row'>
+          <div class='col-md-3'>
+            <nav>
+              <ul class='nav nav-stacked'>
+                <li>
+                  <a href="/getting-started/">Overview</a>
+                  <ul>
+                    <li><a href="/getting-started/#features">Features</a></li>
+                    <li><a href="/getting-started/#coming-from-hubot">Coming from Hubot</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="/getting-started/installation/">Installation</a>
+                  <ul>
+                    <li><a href="/getting-started/installation/#vagrant">Vagrant</a></li>
+                  </ul>
+                  <ul>
+                    <li><a href="/getting-started/installation/#manual-installation">Manual installation</a></li>
+                  </ul>
+                </li>
+                <li><a href="/getting-started/plugins/">Plugins</a></li>
+                <li>
+                  <a href="/getting-started/configuration/">Configuration</a>
+                  <ul>
+                    <li><a href="/getting-started/configuration/#localization">Localization</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="/getting-started/usage/">Usage</a>
+                  <ul>
+                    <li><a href="/getting-started/usage/#shell-adapter">Shell adapter</a></li>
+                    <li><a href="/getting-started/usage/#messages-and-commands">Messages and commands</a></li>
+                    <li><a href="/getting-started/usage/#in-chat-help">In-chat help</a></li>
+                    <li><a href="/getting-started/usage/#basic-info">Basic info</a></li>
+                    <li><a href="/getting-started/usage/#managing-rooms">Managing rooms</a></li>
+                    <li><a href="/getting-started/usage/#authorization-groups">Authorization groups</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="/getting-started/deployment/">Deployment</a>
+                  <ul>
+                    <li><a href="/getting-started/deployment/#heroku">Heroku</a></li>
+                    <li><a href="/getting-started/deployment/#daemonization">Deployment</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class='col-md-9'>
+            <div class='page-header first-heading'>
+              <h2>Installation</h2>
+            </div>
+            <p>To run Lita, the following software is required:</p>
+            <ul>
+              <li>Ruby, version 2.0 or greater</li>
+              <li>Redis, version 2.6 or greater</li>
+            </ul>
+            <p>If you don't already have a development environment with these dependencies installed, there are two approaches to take to get started with Lita.</p>
+            <h3 id='vagrant'>Vagrant</h3>
+            <p>The easiest way to get started with Lita is to use the Vagrant virtual machine provided specifically for Lita development. If you're not familiar with it, Vagrant is a tool for managing complete development environments inside virtual machines. Using Vagrant and the Lita development environment, you can quickly boot a virtual Ubuntu machine with Ruby, Redis, and Lita pre-installed and ready to go. This VM works regardless of what type of computer you use &mdash; Linux, Mac OS X, and Windows are all supported by Vagrant. It takes just a few steps:</p>
+            <ol>
+              <li>Install <a href="http://www.vagrantup.com/">Vagrant</a> for your operating system.</li>
+              <li>Install <a href="https://www.virtualbox.org/">VirtualBox</a>, the virtualization software Vagrant uses behind the scenes. (If you're already a Vagrant user and you prefer using a <a href="http://www.vmware.com/">VMware</a> provider, you don't need to install VirtualBox. The Lita development environment supports both providers.)</li>
+              <li>Download and unzip the <a href="https://github.com/litaio/development-environment/archive/master.zip">Lita development environment</a>.</li>
+              <li>In a terminal window, move into the Lita development environment directory, and run <code>vagrant up</code>. This will download the virtual machine and boot it. The first time you do this it will take a few minutes.</li>
+              <li>Once the VM is finished booting, run <code>vagrant ssh</code> to connect.</li>
+              <li>Inside the development environment, run <code>cd /vagrant</code> to move into the shared Vagrant directory. Everything in this directory is shared with the Lita development environment directory on your host system, and changes are reflected immediately.</li>
+              <li>Run <code>lita new .</code> (note the period) to create a new Lita project. This will generate a Gemfile and Lita configuration file, which is all you need to configure and run Lita. For a full list of possible invocations of the <code>lita</code> command, run <code>lita help</code>.</li>
+            </ol>
+            <p>You must interact with the <code>lita</code> and <code>bundle</code> commands inside the VM, but you can edit your project files either inside the VM or on your host system with the editor of your choice.</p>
+            <h3 id='manual-installation'>Manual installation</h3>
+            <p>Methods for installing Ruby 2.0 vary a lot between systems and are largely beyond the scope of this documentation. However, here are some quick tips for various operating systems:</p>
+            <dl>
+              <dt>Linux</dt>
+              <dd>Ruby is available via many Linux distribution's package managers. The distribution may only package an older (1.x) version of Ruby, in which case you will need to compile it yourself. For Ubuntu, check out <a href="http://brightbox.com/docs/ruby/ubuntu/">Brightbox's Ubuntu Ruby packages</a>.</dd>
+              <dt>Mac OS X</dt>
+              <dd>Mac OS X 10.9 Mavericks or higher comes with Ruby 2.0 already installed, although the some commands may require you to use <code>sudo</code> for the correct permissions. Another good choice is installing a Ruby package with <a href="http://brew.sh/">Homebrew</a>.</dd>
+              <dt>Compiling from source on a Unix-like system</dt>
+              <dd><a href="https://github.com/sstephenson/ruby-build">ruby-build</a> automates the compilation process for you.</dd>
+              <dt>Windows</dt>
+              <dd><a href="http://rubyinstaller.org/">RubyInstaller</a> is a good choice.</dd>
+            </dl>
+            <p>Redis installation is generally easier. Packages are available for most Unix-like systems. Compiling from source is also very straightforward. See the documentation on the <a href="http://redis.io/">Redis</a> website for details.</p>
+            <p>Given that you have working installations of the dependent software (Ruby and Redis), installing Lita is as simple as running the following command in your shell:</p>
+            <pre><code>gem install lita</code></pre>
+            <p>Once Lita is installed, create a new Lita project with this shell command:</p>
+            <pre><code>lita new</code></pre>
+            <p>This will generate a new directory called "lita" with a Gemfile and Lita configuration file, which is all you need to configure and run Lita.</p>
+            <p>For a full list of possible invocations of the <code>lita</code> command, run <code>lita help</code>.</p>
+            <div class='alert alert-info'>
+              <strong>Note:</strong>
+              If you are running Lita on JRuby, you'll need to use Ruby 2.0 mode, by invoking lita with <code>jruby --2.0 -S lita</code> or setting the environment variable <code>JRUBY_OPTS</code> to <code>--2.0</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <ul class='nav navbar-nav'>
+          <li><a href="https://github.com/jimmycuadra/lita">GitHub</a></li>
+          <li><a href="https://twitter.com/litachatbot">Twitter</a></li>
+          <li><a href="https://groups.google.com/group/litaio">Mailing List</a></li>
+          <li><a href="http://webchat.freenode.net/?channels=lita.io">IRC</a></li>
+        </ul>
+        <ul class='nav navbar nav navbar-right'>
+          <li>
+            <div class='navbar-text'>© 2014 Lita.io</div>
+          </li>
+        </ul>
+      </div>
+    </footer>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script><script src="/javascripts/application-8ea00ca6.js" type="text/javascript"></script>
+  </body>
+</html>

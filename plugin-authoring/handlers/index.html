@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href="/images/favicon.ico" rel="icon" type="image/ico" />
+    <title>Plugin Authoring: Handlers - Lita.io</title>
+    <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
+    <link href="/stylesheets/application-adb34666.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <nav class='navbar navbar-default navbar-static-top navbar-inverse' role='navigation'>
+      <div class='container'>
+        <a class="navbar-brand hidden-xs" href="/">Lita Documentation</a>
+        <div class='hidden-xs'><a class="btn btn-default navbar-btn navbar-right" href="https://www.lita.io/">Lita.io</a></div>
+        <div class='navbar-text navbar-right hidden-xs'></div>
+        <ul class='nav navbar-nav navbar-right'>
+          <li class='dropdown'>
+            <a href='/getting-started/'>
+              Getting Started
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/getting-started/">Overview</a></li>
+              <li><a href="/getting-started/installation/">Installation</a></li>
+              <li><a href="/getting-started/plugins/">Plugins</a></li>
+              <li><a href="/getting-started/configuration/">Configuration</a></li>
+              <li><a href="/getting-started/usage/">Usage</a></li>
+              <li><a href="/getting-started/deployment/">Deployment</a></li>
+            </ul>
+          </li>
+          <li class='dropdown'>
+            <a href='/plugin-authoring/'>
+              Plugin Authoring
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/plugin-authoring/">Overview</a></li>
+              <li><a href="/plugin-authoring/adapters/">Adapters</a></li>
+              <li><a href="/plugin-authoring/handlers/">Handlers</a></li>
+              <li><a href="/plugin-authoring/events/">Events</a></li>
+              <li><a href="/plugin-authoring/localization/">Localization</a></li>
+              <li><a href="/plugin-authoring/extensions/">Extensions</a></li>
+              <li><a href="/plugin-authoring/testing/">Testing</a></li>
+              <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class='content'>
+      <div class='container'>
+        <div class='page-header'>
+          <h1>Plugin Authoring</h1>
+        </div>
+        <div class='row'>
+          <div class='col-md-3'>
+            <nav>
+              <ul class='nav nav-stacked'>
+                <li><a href="/plugin-authoring/">Overview</a></li>
+                <li>
+                  <a href="/plugin-authoring/adapters/">Adapters</a>
+                  <ul>
+                    <li><a href="/plugin-authoring/adapters/#examples">Examples</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="/plugin-authoring/handlers/">Handlers</a>
+                  <ul>
+                    <li><a href="/plugin-authoring/handlers/#chat-routes">Chat routes</a></li>
+                    <li><a href="/plugin-authoring/handlers/#http-routes">HTTP routes</a></li>
+                    <li><a href="/plugin-authoring/handlers/#timers">Timers</a></li>
+                    <li><a href="/plugin-authoring/handlers/#configuration">Configuration</a></li>
+                    <li><a href="/plugin-authoring/handlers/#examples">Examples</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="/plugin-authoring/events/">Events</a>
+                  <ul>
+                    <li><a href="/plugin-authoring/events/#built-in-events">Built-in events</a></li>
+                  </ul>
+                </li>
+                <li><a href="/plugin-authoring/localization/">Localization</a></li>
+                <li>
+                  <a href="/plugin-authoring/extensions/">Extensions</a>
+                  <ul>
+                    <li><a href="/plugin-authoring/extensions/#hooks">Hooks</a></li>
+                    <li><a href="/plugin-authoring/extensions/#examples">Examples</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="/plugin-authoring/testing/">Testing</a>
+                  <ul>
+                    <li><a href="/plugin-authoring/testing/#testing-adapters">Testing adapters</a></li>
+                    <li><a href="/plugin-authoring/testing/#testing-handlers">Testing handlers</a></li>
+                    <li><a href="/plugin-authoring/testing/#testing-routes">Testing routes</a></li>
+                    <li><a href="/plugin-authoring/testing/#testing-behavior">Testing behavior</a></li>
+                  </ul>
+                </li>
+                <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class='col-md-9'>
+            <div class='page-header first-heading'>
+              <h2>Handlers</h2>
+            </div>
+            <p>A handler is a plugin that adds new functionality to Lita at runtime. It's a class that inherits from <code>Lita::Handler</code> and is registered with Lita. There are two primary components to a handler: route definitions, and the methods that implement those routes. There are both chat routes and HTTP routes. There's also an event subscription system available to all plugins (both handlers and adapters) which work similarly to the other kinds of routes.</p>
+            <h3 id='chat-routes'>Chat routes</h3>
+            <p>A chat route makes Lita listen for messages via chat. To define a chat route, use the class method <code>route</code>:</p>
+            <pre><code class='ruby'>route /^echo\s+(.+)/, :echo</code></pre>
+            <p><code>route</code> takes a regular expression that will be used to determine whether or not an incoming message should trigger the route, and the name of the method that should be called when this route is triggered. Only two arguments are required, but <code>route</code> accepts a few additional options:</p>
+            <table class='table table-bordered'>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Default</th>
+              </tr>
+              <tr>
+                <td>
+                  <code>:command</code>
+                </td>
+                <td><code>TrueClass</code>, <code>FalseClass</code></td>
+                <td>If set to true, the route will only trigger when "directed" at the robot. Directed means that it's sent via a private message, or the message is prefixed with the bot's name in some form (optionally prefixed with an @, and optionally followed by a colon or comma and white space). This prefix is stripped from the message body itself, but <code>Lita::Message#command?</code> available in handlers can be used if you need to determine whether or not a message was a command after it's been routed.</td>
+                <td>
+                  <code>false</code>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>:restrict_to</code>
+                </td>
+                <td><code>Symbol</code>, <code>String</code>, <code>Array&lt;String, Symbol&gt;</code></td>
+                <td>Authorization groups necessary to trigger the route. The user sending the message must be a member of at least one of the supplied groups. See <a href="/getting-started/#authorization-groups">authorization groups</a> for more information.</td>
+                <td>
+                  <code>nil</code>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>:help</code>
+                </td>
+                <td>
+                  <code>Hash&lt;String&gt;</code>
+                </td>
+                <td>A map of example invocations of the route and descriptions of what they do. These values will be used to generate the listing for the built-in "help" handler. The robot's mention name will automatically be added to the front of the example if the route is a command.</td>
+                <td>
+                  <code>{}</code>
+                </td>
+              </tr>
+            </table>
+            <p>Here is an example of a route declaration with all the possible options:</p>
+            <pre><code class='ruby'>route /^echo\s+(.+)/, :echo, command: true, restrict_to: [:testers, :committers], help: {&#x000A;  "echo TEXT" => "Replies back with TEXT."&#x000A;}&#x000A;</code></pre>
+            <p>Routes will remember aribtrary key/value pairs that are not in the table above. Extra options are accessible by Lita extensions to add custom functionality to the routing system. (More on this later. See: <a href="#extensions">Extensions</a>.)</p>
+            <h4 class='spacer'>Callbacks</h4>
+            <p>When a route is triggered, it invokes the instance method specified by the second argument to <code>route</code>. These methods take one argument, a <code>Lita::Response</code> object. <code>Lita::Response</code> is the primary interface for inspecting details about the incoming message and responding to it. It has the following useful methods:</p>
+            <table class='table table-bordered'>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td><code>reply</code></td>
+                <td>Sends one or more string messages back to the source of the original message, either a private message or a chat room.</td>
+              </tr>
+              <tr>
+                <td><code>reply_privately</code></td>
+                <td>Sends one or more string messages back to the user who sent the original message, whether it initated in a private message or a chat room.</td>
+              </tr>
+              <tr>
+                <td><code>matches</code></td>
+                <td>An array of regular expression matches obtained via <code>String#scan</code>.</td>
+              </tr>
+              <tr>
+                <td><code>match_data</code></td>
+                <td>A <code>MatchData</code> object obtained via <code>Regexp#match</code>.</td>
+              </tr>
+              <tr>
+                <td><code>args</code></td>
+                <td>The user's message as an array of strings, as it would be parsed by <code>Shellwords.split</code>. For example, if the message was "Lita: auth add Joe committers", calling <code>args</code> would return <code>["add", "Joe", "committers"]</code>. ("auth" is considered the command and so is not included in the arguments.) This is very handy for commands that take arguments in a way similar to how a UNIX shell would work.</td>
+              </tr>
+              <tr>
+                <td><code>message</code></td>
+                <td>A <code>Lita::Message</code> object for the incoming message.</td>
+              </tr>
+              <tr>
+                <td><code>user</code></td>
+                <td>A <code>Lita::User</code> object for the user who sent the message.</td>
+              </tr>
+              <tr>
+                <td><code>extensions</code></td>
+                <td>A hash of arbitrary data that can be populated by Lita extensions for custom functionality. (More on this later. See: <a href="#extensions">Extensions</a>.)</td>
+              </tr>
+            </table>
+            <p>Additionally, handlers have access to the following instance methods:</p>
+            <table class='table table-bordered'>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td><code>robot</code></td>
+                <td>Direct access to the currently running <code>Lita::Robot</code> object.</td>
+              </tr>
+              <tr>
+                <td><code>redis</code></td>
+                <td>A <code>Redis::Namespace</code> object which provides each handler with its own isolated Redis store, suitable for many data persistence and manipulation tasks.</td>
+              </tr>
+              <tr>
+                <td><code>http</code></td>
+                <td>A <code>Faraday::Connection</code> object for making HTTP requests. Takes an optional hash of options and optional block which are passed on to <a href="https://github.com/lostisland/faraday">Faraday</a>.</td>
+              </tr>
+              <tr>
+                <td><code>translate</code> (aliased to <code>t</code>)</td>
+                <td>A convenience method for easily localizing text. Takes the string key of the translation, and an optional hash of values to interpolate into the translated string.</td>
+              </tr>
+              <tr>
+                <td><code>config</code></td>
+                <td>The handler's namespaced <code>Lita::Config</code> object, if it has any configuration of its own. This is a convenience method and is the same as calling `Lita.config.handlers.your_handler_namespace`.</td>
+              </tr>
+              <tr>
+                <td><code>log</code></td>
+                <td>A convenience method for accessing the global logger object. Equivalent to `Lita.logger`.</td>
+              </tr>
+            </table>
+            <p>If a handler method crashes, the backtrace will be output to Lita's log with the <code>:error</code> level, but it will not crash Lita itself.</p>
+            <h3 id='http-routes'>HTTP routes</h3>
+            <p>In addition to chat routes, handlers can also define HTTP routes for Lita's built-in web server. This is achieved with the class-level <code>http</code> method. <code>http</code> returns a <code>Lita::HTTPRoute</code> object, which, in turn, has methods to define routes for the most common HTTP methods.</p>
+            <p>In its simplest form, <code>Lita::HTTPRoute</code>'s methods take two arguments: the path for the route, and the name of the callback method in the handler that it will invoke.</p>
+            <p>The callback method takes two arguments: a <code>Rack::Request</code> and a <code>Rack::Response</code>. For example:</p>
+            <pre><code class='ruby'>http.get "/greet_browser", :greet&#x000A;&#x000A;def greet(request, response)&#x000A;  response.body = "Hello, #{request.user_agent}!"&#x000A;end&#x000A;</code></pre>
+            <p>The request object can be used to inspect the details of the incoming HTTP request and the response object is used to determine the status code, HTTP headers, and body that are ultimately returned to the user. <code>Lita::HTTPRoute</code> has methods for the following HTTP verbs, just like <code>get</code>, which is shown in the example above:</p>
+            <ul>
+              <li><code>head</code></li>
+              <li><code>get</code></li>
+              <li><code>post</code></li>
+              <li><code>put</code></li>
+              <li><code>patch</code></li>
+              <li><code>delete</code></li>
+              <li><code>options</code></li>
+              <li><code>link</code></li>
+              <li><code>unlink</code></li>
+            </ul>
+            <h4 class='spaced'>Advanced routing</h4>
+            <p>Lita's HTTP router has the ability to define paths with variable segments, if you should need them. A variable segment is denoted by prefixing a word with a colon. The "symbol" will accept any characters in its place, and will assign the actual value to a parameter with the symbol's name in the Rack environment. To illustrate:</p>
+            <pre><code class='ruby'>http.get "/builds/:id", :build_info&#x000A;&#x000A;def build_info(request, response)&#x000A;  id = request.env["router.params"][:id]&#x000A;  build = MyBuildSystem.find(id)&#x000A;  response.headers["Content-Type"] = "application/json"&#x000A;  response.write(MultiJson.dump(build))&#x000A;end&#x000A;</code></pre>
+            <p>The variable path segment <code>:id</code> allows the route to match <code>GET /builds/1</code>, <code>GET /builds/2</code>, and so on. It's also possible to use a regular expression to constrain the format of the variable segment. This could be useful, for example, to ensure that the route only matches when <code>:id</code> consists of digits.</p>
+            <pre><code class='ruby'>http.get "/builds/:id", :build_info, id: %r{\d+}&#x000A;</code></pre>
+            <p>This illustrates the third, optional argument to the routing methods: a hash of variable names to regular expression constraints.</p>
+            <p>The variable constraint feature also allows two otherwise identical path patterns to route to different callbacks. Consider this case:</p>
+            <pre><code class='ruby'>http.get "/builds/:id", :build_info, id: %r{\d+}&#x000A;http.get "/builds/:id", :named_build_info&#x000A;</code></pre>
+            <p>In this case, a request to <code>GET /builds/1</code> would trigger the first route, while a request to <code>GET /builds/my_first_build</code> would fall through to the second route.</p>
+            <p>Lita's router also supports path globbing, which allows a group of path segments to collapse into a variable array:</p>
+            <pre><code class='ruby'>http.get "/hello/*adjectives/world", :glob&#x000A;&#x000A;def glob(request, response)&#x000A;  response.write(request.env["router.params"][:adjectives].join(", "))&#x000A;end&#x000A;</code></pre>
+            <p>This would match a request like <code>GET /hello/dark/cruel/world</code>, and write <code>dark, cruel</code> to the response.</p>
+            <h3 id='timers'>Timers</h3>
+            <p>Handlers can execute blocks of code after a delay, or repeatedly at intervals by using timers. The handler methods <code>after</code> and <code>every</code> perform these two tasks, respectively. Each method takes a number of seconds to wait, and a block to execute after the time has elapsed. They each yield a <code>Lita::Timer</code> object to the block. For recurring timers created with <code>every</code>, you should call <code>stop</code> on the timer object when it reaches a terminating condition, or it will continue forever until Lita is stopped.</p>
+            <pre><code class='ruby'>def greet(response)&#x000A;  after(5) { |timer| response.reply("Hello, 5 seconds later!") }&#x000A;end&#x000A;&#x000A;def reminder(response)&#x000A;  every(60) do |timer|&#x000A;    response.reply("This is your 60 second reminder!")&#x000A;    timer.stop if some_condition?&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <p>If you want to use a timer outside a class that inherits from <code>Lita::Handler</code> (where these helper methods aren't available) you can use <code>Lita::Timer</code> directly.</p>
+            <div class='alert alert-info'>
+              <strong>Note:</strong>
+              The recurring timer does not start waiting until after the block has executed on subsequent iterations. This means that if your timer interval is 60 seconds, but your block takes 10 seconds to run, the block will only happen every 70 seconds of real time.
+            </div>
+            <h3 id='configuration'>Configuration</h3>
+            <p>If you want your handler to expose config settings to the user, use the class-level <code>default_config</code> method. This method accepts a single config object as an argument, which will be exposed to the user as <code>Lita.config.handlers.your_handler_namespace</code>. Use the <code>default_config</code> method to set up any default values you want for your handler's configuration attributes.</p>
+            <pre><code class='ruby'>module Lita&#x000A;  module Handlers&#x000A;    class HandlerWithConfig < Handler&#x000A;      def self.default_config(config)&#x000A;        config.enabled = true&#x000A;      end&#x000A;    end&#x000A;  end&#x000A;end&#x000A;&#x000A;Lita.config.handlers.handler_with_config.enabled # => true&#x000A;</code></pre>
+            <div class='alert alert-warning'>
+              <strong>Important!</strong>
+              All the values in <code>Lita.config</code> are frozen at runtime. Consider them read only outside of the <code>default_config</code> method.
+            </div>
+            <h3 id='examples'>Examples</h3>
+            <p>Here is a basic handler which simply echoes back whatever the user says.</p>
+            <pre><code class='ruby'>module Lita&#x000A;  module Handlers&#x000A;    class Echo < Handler&#x000A;      route /^echo\s+(.+)/, :echo, help: { "echo TEXT" => "Echoes back TEXT." }&#x000A;&#x000A;      def echo(response)&#x000A;        response.reply(response.matches)&#x000A;      end&#x000A;    end&#x000A;&#x000A;    # Adds the handler to Lita's handler registry. Users can now use the&#x000A;    # handler simply by requiring it.&#x000A;    Lita.register_handler(Echo)&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <p>Here is a handler that tells a user who their United States congressional representative is based on zip code with data from a fictional HTTP API. The results are saved in the handler's namespaced Redis store to save HTTP calls on future requests.</p>
+            <pre><code class='ruby'>module Lita&#x000A;  module Handlers&#x000A;    class Representative < Handler&#x000A;      route /representative\s+(\d{5})/, :lookup, command: true, help: {&#x000A;        "representative ZIP_CODE" => "Looks up your U.S. congressional representative by zip code."&#x000A;      }&#x000A;&#x000A;      def lookup(response)&#x000A;        zip = response.matches[0][0]&#x000A;        rep = redis.get(zip)&#x000A;        rep = get_rep(zip) unless rep&#x000A;        response.reply "The representative for #{zip} is #{rep}."&#x000A;      end&#x000A;&#x000A;      private&#x000A;&#x000A;      def get_rep(zip)&#x000A;        http_response = http.get(&#x000A;          "http://www.example.com/api/represenative",&#x000A;          zip_code: zip&#x000A;        )&#x000A;&#x000A;        data = MultiJson.load(http_response.body)&#x000A;        rep = data["representative"]["name"]&#x000A;        redis.set(zip, rep)&#x000A;        rep&#x000A;      end&#x000A;    end&#x000A;&#x000A;    Lita.register_handler(Representative)&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <p>For more detailed examples, check out the built in authorization, help, and web handlers, or any of the many existing handler plugins on the <a href="https://www.lita.io/plugins">plugins</a> page. Refer to the <a href="http://rdoc.info/gems/lita/frames">API documentation</a> for exact specifications for handlers' methods.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <ul class='nav navbar-nav'>
+          <li><a href="https://github.com/jimmycuadra/lita">GitHub</a></li>
+          <li><a href="https://twitter.com/litachatbot">Twitter</a></li>
+          <li><a href="https://groups.google.com/group/litaio">Mailing List</a></li>
+          <li><a href="http://webchat.freenode.net/?channels=lita.io">IRC</a></li>
+        </ul>
+        <ul class='nav navbar nav navbar-right'>
+          <li>
+            <div class='navbar-text'>© 2014 Lita.io</div>
+          </li>
+        </ul>
+      </div>
+    </footer>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script><script src="/javascripts/application-8ea00ca6.js" type="text/javascript"></script>
+  </body>
+</html>
