@@ -232,7 +232,7 @@
             <p>In addition to chat routes, handlers can also define HTTP routes for Lita's built-in web server. This is achieved with the class-level <code>http</code> method. <code>http</code> returns a <code>Lita::HTTPRoute</code> object, which, in turn, has methods to define routes for the most common HTTP methods.</p>
             <p>In its simplest form, <code>Lita::HTTPRoute</code>'s methods take two arguments: the path for the route, and the name of the callback method in the handler that it will invoke.</p>
             <p>The callback method takes two arguments: a <code>Rack::Request</code> and a <code>Rack::Response</code>. For example:</p>
-            <pre><code class='ruby'>http.get "/greet_browser", :greet&#x000A;&#x000A;def greet(request, response)&#x000A;  response.body = "Hello, #{request.user_agent}!"&#x000A;end&#x000A;</code></pre>
+            <pre><code class='ruby'>http.get "/greet_browser", :greet&#x000A;&#x000A;def greet(request, response)&#x000A;  response.body << "Hello, #{request.user_agent}!"&#x000A;end&#x000A;</code></pre>
             <p>The request object can be used to inspect the details of the incoming HTTP request and the response object is used to determine the status code, HTTP headers, and body that are ultimately returned to the user. <code>Lita::HTTPRoute</code> has methods for the following HTTP verbs, just like <code>get</code>, which is shown in the example above:</p>
             <ul>
               <li><code>head</code></li>
