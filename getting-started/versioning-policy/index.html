@@ -4,7 +4,7 @@
     <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
     <meta content='width=device-width, initial-scale=1.0' name='viewport'>
     <link href="/images/favicon.ico" rel="icon" type="image/ico" />
-    <title>Plugin Authoring - Lita.io</title>
+    <title>Getting Started: Versioning Policy - Lita.io</title>
     <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
     <link href="/stylesheets/application-adb34666.css" rel="stylesheet" type="text/css" />
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-5500916-13', 'lita.io');ga('send', 'pageview');</script>
@@ -53,62 +53,79 @@
     <div class='content'>
       <div class='container'>
         <div class='page-header'>
-          <h1>Plugin Authoring</h1>
+          <h1>Getting Started</h1>
         </div>
         <div class='row'>
           <div class='col-md-3'>
             <nav>
               <ul class='nav nav-stacked'>
-                <li><a href="/plugin-authoring/">Overview</a></li>
                 <li>
-                  <a href="/plugin-authoring/adapters/">Adapters</a>
+                  <a href="/getting-started/">Overview</a>
                   <ul>
-                    <li><a href="/plugin-authoring/adapters/#examples">Examples</a></li>
+                    <li><a href="/getting-started/#features">Features</a></li>
+                    <li><a href="/getting-started/#coming-from-hubot">Coming from Hubot</a></li>
                   </ul>
                 </li>
                 <li>
-                  <a href="/plugin-authoring/handlers/">Handlers</a>
+                  <a href="/getting-started/installation/">Installation</a>
                   <ul>
-                    <li><a href="/plugin-authoring/handlers/#chat-routes">Chat routes</a></li>
-                    <li><a href="/plugin-authoring/handlers/#http-routes">HTTP routes</a></li>
-                    <li><a href="/plugin-authoring/handlers/#timers">Timers</a></li>
-                    <li><a href="/plugin-authoring/handlers/#configuration">Configuration</a></li>
-                    <li><a href="/plugin-authoring/handlers/#examples">Examples</a></li>
+                    <li><a href="/getting-started/installation/#vagrant">Vagrant</a></li>
+                  </ul>
+                  <ul>
+                    <li><a href="/getting-started/installation/#manual-installation">Manual installation</a></li>
+                  </ul>
+                </li>
+                <li><a href="/getting-started/plugins/">Plugins</a></li>
+                <li>
+                  <a href="/getting-started/configuration/">Configuration</a>
+                  <ul>
+                    <li><a href="/getting-started/configuration/#localization">Localization</a></li>
                   </ul>
                 </li>
                 <li>
-                  <a href="/plugin-authoring/events/">Events</a>
+                  <a href="/getting-started/usage/">Usage</a>
                   <ul>
-                    <li><a href="/plugin-authoring/events/#built-in-events">Built-in events</a></li>
-                  </ul>
-                </li>
-                <li><a href="/plugin-authoring/localization/">Localization</a></li>
-                <li>
-                  <a href="/plugin-authoring/extensions/">Extensions</a>
-                  <ul>
-                    <li><a href="/plugin-authoring/extensions/#hooks">Hooks</a></li>
-                    <li><a href="/plugin-authoring/extensions/#examples">Examples</a></li>
+                    <li><a href="/getting-started/usage/#shell-adapter">Shell adapter</a></li>
+                    <li><a href="/getting-started/usage/#messages-and-commands">Messages and commands</a></li>
+                    <li><a href="/getting-started/usage/#in-chat-help">In-chat help</a></li>
+                    <li><a href="/getting-started/usage/#basic-info">Basic info</a></li>
+                    <li><a href="/getting-started/usage/#managing-rooms">Managing rooms</a></li>
+                    <li><a href="/getting-started/usage/#authorization-groups">Authorization groups</a></li>
                   </ul>
                 </li>
                 <li>
-                  <a href="/plugin-authoring/testing/">Testing</a>
+                  <a href="/getting-started/deployment/">Deployment</a>
                   <ul>
-                    <li><a href="/plugin-authoring/testing/#testing-adapters">Testing adapters</a></li>
-                    <li><a href="/plugin-authoring/testing/#testing-handlers">Testing handlers</a></li>
-                    <li><a href="/plugin-authoring/testing/#testing-routes">Testing routes</a></li>
-                    <li><a href="/plugin-authoring/testing/#testing-behavior">Testing behavior</a></li>
+                    <li><a href="/getting-started/deployment/#heroku">Heroku</a></li>
+                    <li><a href="/getting-started/deployment/#daemonization">Daemonization</a></li>
                   </ul>
                 </li>
-                <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
+                <li>
+                  <a href="/getting-started/versioning-policy/">Versioning Policy</a>
+                  <ul>
+                    <li><a href="/getting-started/versioning-policy/#deprecation-policy">Deprecation Policy</a></li>
+                  </ul>
+                </li>
               </ul>
             </nav>
           </div>
           <div class='col-md-9'>
             <div class='page-header first-heading'>
-              <h2>Overview</h2>
+              <h2>Versioning Policy</h2>
             </div>
-            <p>Lita's plugin system is used to connect with different chat services and to add new runtime behavior. This page provides details for plugin authors to create their own adapters and handlers. If you're just learning about Lita, you may want to check out the <a href="/getting-started/">getting started</a> page first.</p>
-            <p>Plugins are written in Ruby, so you'll need some familiarity with Ruby and its ecosystem of tools to write and publish a plugin. To test plugins, Lita provides some useful additions for the <a href="https://github.com/rspec/rspec">RSpec</a> testing framework. It's not necessary to use them, but familiarity with RSpec will be beneficial in testing your plugins.</p>
+            <p>Lita follows <a href="http://semver.org/">Semantic Versioning</a>. Lita's version number has three parts: MAJOR, MINOR, and PATCH, e.g. 1.2.3. In short:</p>
+            <ul>
+              <li>Any changes which could cause existing plugins to raise exceptions or change behavior will increase the MAJOR version.</li>
+              <li>Any new functionality that is completely backwards-compatible will increase the MINOR version.</li>
+              <li>Any bug fixes or changes to minor behavior that were not working as documented will increase the PATCH version.</li>
+            </ul>
+            <h3 id='deprecation-policy'>Deprecation Policy</h3>
+            <p>A deprecated feature is one that is marked to be removed in a future version. It may or may not have replacement or alternative functionality.</p>
+            <p>Rules about deprecations:</p>
+            <ul>
+              <li>Features will only be deprecated in new MAJOR versions. This means that all non-deprecated features will continue to work in the next MAJOR version.</li>
+              <li>When a feature is deprecated, it will not be completely removed until the following MAJOR version. This means that upgrading Lita to a new MAJOR version will only potentially break plugins using deprecated functionality from two MAJOR versions ago. A full MAJOR version period is given for plugins to safely update code for any deprecated functionality.</li>
+            </ul>
           </div>
         </div>
       </div>
