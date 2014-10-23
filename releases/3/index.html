@@ -4,7 +4,7 @@
     <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
     <meta content='width=device-width, initial-scale=1.0' name='viewport'>
     <link href="/images/favicon.ico" rel="icon" type="image/ico" />
-    <title>Getting Started: Plugins - Lita.io</title>
+    <title>Lita 3.0 - Lita.io</title>
     <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
     <link href="/stylesheets/application-b6900e68.css" rel="stylesheet" type="text/css" />
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-5500916-13', 'lita.io');ga('send', 'pageview');</script>
@@ -62,72 +62,54 @@
     <div class='content'>
       <div class='container'>
         <div class='page-header'>
-          <h1>Getting Started</h1>
+          <h1>Lita 3.0</h1>
         </div>
         <div class='row'>
           <div class='col-md-3'>
             <nav>
               <ul class='nav nav-stacked'>
-                <li>
-                  <a href="/getting-started/">Overview</a>
-                  <ul>
-                    <li><a href="/getting-started/#features">Features</a></li>
-                    <li><a href="/getting-started/#coming-from-hubot">Coming from Hubot</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="/getting-started/installation/">Installation</a>
-                  <ul>
-                    <li><a href="/getting-started/installation/#vagrant">Vagrant</a></li>
-                  </ul>
-                  <ul>
-                    <li><a href="/getting-started/installation/#manual-installation">Manual installation</a></li>
-                  </ul>
-                </li>
-                <li><a href="/getting-started/plugins/">Plugins</a></li>
-                <li>
-                  <a href="/getting-started/configuration/">Configuration</a>
-                  <ul>
-                    <li><a href="/getting-started/configuration/#localization">Localization</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="/getting-started/usage/">Usage</a>
-                  <ul>
-                    <li><a href="/getting-started/usage/#shell-adapter">Shell adapter</a></li>
-                    <li><a href="/getting-started/usage/#messages-and-commands">Messages and commands</a></li>
-                    <li><a href="/getting-started/usage/#in-chat-help">In-chat help</a></li>
-                    <li><a href="/getting-started/usage/#basic-info">Basic info</a></li>
-                    <li><a href="/getting-started/usage/#managing-rooms">Managing rooms</a></li>
-                    <li><a href="/getting-started/usage/#authorization-groups">Authorization groups</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="/getting-started/deployment/">Deployment</a>
-                  <ul>
-                    <li><a href="/getting-started/deployment/#heroku">Heroku</a></li>
-                    <li><a href="/getting-started/deployment/#daemonization">Daemonization</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="/getting-started/versioning-policy/">Versioning Policy</a>
-                  <ul>
-                    <li><a href="/getting-started/versioning-policy/#deprecation-policy">Deprecation Policy</a></li>
-                  </ul>
-                </li>
+                <li><a href="/releases/4/">Lita 4</a></li>
+                <li><a href="/releases/3/">Lita 3</a></li>
               </ul>
             </nav>
           </div>
           <div class='col-md-9'>
             <div class='page-header first-heading'>
-              <h2>Plugins</h2>
+              <h2>Release announcement</h2>
             </div>
-            <p>The core Lita gem provides a framework to build on, but includes only a minimal amount of functionality to Lita at runtime. To make real use of it, you'll want to install an adapter plugin to allow Lita to connect to the chat service of your choice, and handler plugins to add new behavior.</p>
-            <p>The <a href="https://www.lita.io/plugins">plugins</a> page is a catalog of all Lita plugins, both adapters and handlers, that have been published to RubyGems. Use the catalog to find an adapter for the chat service you want to use, and as many handlers as you want for added functionality.</p>
-            <p>Adding the plugins you choose to Lita is as simple as adding them to the Gemfile and running the <kbd>bundle</kbd> command in your shell to update the Gemfile.lock. The <kbd>bundle</kbd> command comes from Bundler, which is installed alongside Lita.</p>
-            <p>For example, to run Lita on HipChat with the karma and Google Images handlers, your complete Gemfile would look like this:</p>
-            <pre><code class='ruby'>source "https://rubygems.org"&#x000A;&#x000A;gem "lita"&#x000A;&#x000A;gem "lita-hipchat"&#x000A;&#x000A;gem "lita-karma"&#x000A;gem "lita-google-images"&#x000A;</code></pre>
-            <p>Adapters will likely require some configuration to be able to connect. See the documentation for the adapter for details. Without installing an adapter plugin, you can still use the default shell adapter to chat with Lita in your terminal.</p>
+            <p>Lita 3.0 was released on February 26, 2014. It contains several new features and improvements for both users and plugin developers.</p>
+            <h3>Changes for users</h3>
+            <ul>
+              <li>The built-in web server is now powered by <a href="http://www.puma.io/">Puma</a>. This should exhibit improved performance with a smaller memory footprint, especially on JRuby. (Rubinius currently does not support Ruby 2.0 syntax, so Lita will not run on it yet.)</li>
+              <li>Lita is now internationalized. The language used for both CLI and runtime messages can be changed via environment variable or configuration attribute. Pull requests adding translations for new languages are most welcome!</li>
+              <li>New <code>join</code> and <code>part</code> commands allow administrators to manage channel presence at runtime.</li>
+              <li>A new <code>info</code> command tells you what version of Lita is running.</li>
+              <li>The <code>auth</code> commands now accept a user name or mention name in addition to ID.</li>
+            </ul>
+            <h3>Changes for plugin authors</h3>
+            <div class='alert alert-warning'>
+              <strong>Note:</strong>
+              Older plugins may be locked to a 2.x version of Lita in their gemspec file. These plugins will need to have their version requirement changed to use "&lt;=" instead of "~&gt;" to be installable with Lita 3.0.
+            </div>
+            <p>There are three changes which are not backwards-compatible, which plugin authors should be aware of:</p>
+            <ul>
+              <li>The previously deprecated method signatures for <code>Lita::Response.new</code> and <code>Lita::Source.new</code> have been removed. Code in the wild has mostly already updated, so this should not have any effect.</li>
+              <li><code>Lita.config</code> is now deeply frozen before the robot is started. This was done to improve thread safety when using globally accessible data. Any plugin code that is mutating <code>Lita.config</code> outside of the <code>default_config</code> Handler class method will need to be updated. The major adapter plugins have already been updated to support this change.</li>
+              <li><code>Lita::RSpec</code> now requires RSpec version 3.</li>
+            </ul>
+            <p>The following new features are available:</p>
+            <ul>
+              <li>The HTTP router now supports Sinatra-style path variables, globbing, and regular expression constraints.</li>
+              <li>Lita is now internationalized and plugins can easily add support for new locales.</li>
+              <li><code>Lita::Robot</code> and <code>Lita::Adapter</code> have new <code>#join</code> and <code>#part</code> methods for managing channel presence at runtime.</li>
+              <li>Timers allow code to execute after a delay or repeatedly at intervals.</li>
+              <li>New, more convenient methods for looking up users by partial name, mention name, or a fuzzy find that will accept any type of user identifier.</li>
+            </ul>
+            <p>Additional changes include:</p>
+            <ul>
+              <li>Improved RSpec support, with better output for chat/HTTP/event routing tests when using the documentation formatter or when examples fail.</li>
+              <li>Improved documentation.</li>
+            </ul>
           </div>
         </div>
       </div>

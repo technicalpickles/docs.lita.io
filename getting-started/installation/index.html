@@ -6,15 +6,13 @@
     <link href="/images/favicon.ico" rel="icon" type="image/ico" />
     <title>Getting Started: Installation - Lita.io</title>
     <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
-    <link href="/stylesheets/application-adb34666.css" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/application-b6900e68.css" rel="stylesheet" type="text/css" />
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-5500916-13', 'lita.io');ga('send', 'pageview');</script>
   </head>
   <body>
     <nav class='navbar navbar-default navbar-static-top navbar-inverse' role='navigation'>
       <div class='container'>
         <a class="navbar-brand hidden-xs" href="/">Lita Documentation</a>
-        <div class='hidden-xs'><a class="btn btn-default navbar-btn navbar-right" href="https://www.lita.io/">Lita.io</a></div>
-        <div class='navbar-text navbar-right hidden-xs'></div>
         <ul class='nav navbar-nav navbar-right'>
           <li class='dropdown'>
             <a href='/getting-started/'>
@@ -47,6 +45,17 @@
               <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
             </ul>
           </li>
+          <li class='dropdown'>
+            <a href='/releases/'>
+              Releases
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/releases/4/">Lita 4</a></li>
+              <li><a href="/releases/3/">Lita 3</a></li>
+            </ul>
+          </li>
+          <li class='navbar-link'><a href="https://www.lita.io/">Lita.io <span class="glyphicon glyphicon-arrow-right"></span></a></li>
         </ul>
       </div>
     </nav>
@@ -125,34 +134,32 @@
               <li>Install <a href="http://www.vagrantup.com/">Vagrant</a> for your operating system.</li>
               <li>Install <a href="https://www.virtualbox.org/">VirtualBox</a>, the virtualization software Vagrant uses behind the scenes. (If you're already a Vagrant user and you prefer using a <a href="http://www.vmware.com/">VMware</a> provider, you don't need to install VirtualBox. The Lita development environment supports both providers.)</li>
               <li>Download and unzip the <a href="https://github.com/litaio/development-environment/archive/master.zip">Lita development environment</a>.</li>
-              <li>In a terminal window, move into the Lita development environment directory, and run <code>vagrant up</code>. This will download the virtual machine and boot it. The first time you do this it will take a few minutes.</li>
-              <li>Once the VM is finished booting, run <code>vagrant ssh</code> to connect.</li>
-              <li>Inside the development environment, run <code>cd /vagrant</code> to move into the shared Vagrant directory. Everything in this directory is shared with the Lita development environment directory on your host system, and changes are reflected immediately.</li>
-              <li>Run <code>lita new .</code> (note the period) to create a new Lita project. This will generate a Gemfile and Lita configuration file, which is all you need to configure and run Lita. For a full list of possible invocations of the <code>lita</code> command, run <code>lita help</code>.</li>
+              <li>In a terminal window, move into the Lita development environment directory, and run <kbd>vagrant up</kbd>. This will download the virtual machine and boot it. The first time you do this it will take a few minutes.</li>
+              <li>Once the VM is finished booting, run <kbd>vagrant ssh</kbd> to connect.</li>
+              <li>Inside the development environment, run <kbd>cd /vagrant</kbd> to move into the shared Vagrant directory. Everything in this directory is shared with the Lita development environment directory on your host system, and changes are reflected immediately.</li>
+              <li>Run <kbd>lita new .</kbd> (note the period) to create a new Lita project. This will generate a Gemfile and Lita configuration file, which is all you need to configure and run Lita. For a full list of possible invocations of the <kbd>lita</kbd> command, run <kbd>lita help</kbd>.</li>
             </ol>
-            <p>You must interact with the <code>lita</code> and <code>bundle</code> commands inside the VM, but you can edit your project files either inside the VM or on your host system with the editor of your choice.</p>
+            <p>You must interact with the <kbd>lita</kbd> and <kbd>bundle</kbd> commands inside the VM, but you can edit your project files either inside the VM or on your host system with the editor of your choice.</p>
             <h3 id='manual-installation'>Manual installation</h3>
             <p>Methods for installing Ruby 2.0 vary a lot between systems and are largely beyond the scope of this documentation. However, here are some quick tips for various operating systems:</p>
             <dl>
               <dt>Linux</dt>
               <dd>Ruby is available via many Linux distribution's package managers. The distribution may only package an older (1.x) version of Ruby, in which case you will need to compile it yourself. For Ubuntu, check out <a href="http://brightbox.com/docs/ruby/ubuntu/">Brightbox's Ubuntu Ruby packages</a>.</dd>
               <dt>Mac OS X</dt>
-              <dd>Mac OS X 10.9 Mavericks or higher comes with Ruby 2.0 already installed, although the some commands may require you to use <code>sudo</code> for the correct permissions. Another good choice is installing a Ruby package with <a href="http://brew.sh/">Homebrew</a>.</dd>
+              <dd>Mac OS X 10.9 Mavericks or higher comes with Ruby 2.0 already installed, although the some commands may require you to use <kbd>sudo</kbd> for the correct permissions. Another good choice is installing a Ruby package with <a href="http://brew.sh/">Homebrew</a>.</dd>
               <dt>Compiling from source on a Unix-like system</dt>
               <dd><a href="https://github.com/sstephenson/ruby-build">ruby-build</a> automates the compilation process for you.</dd>
               <dt>Windows</dt>
               <dd><a href="http://rubyinstaller.org/">RubyInstaller</a> is a good choice.</dd>
             </dl>
             <p>Redis installation is generally easier. Packages are available for most Unix-like systems. Compiling from source is also very straightforward. See the documentation on the <a href="http://redis.io/">Redis</a> website for details.</p>
-            <p>Given that you have working installations of the dependent software (Ruby and Redis), installing Lita is as simple as running the following command in your shell:</p>
-            <pre><code>gem install lita</code></pre>
-            <p>Once Lita is installed, create a new Lita project with this shell command:</p>
-            <pre><code>lita new</code></pre>
+            <p>Given that you have working installations of the dependent software (Ruby and Redis), installing Lita is as simple as running the following command in your shell: <kbd>gem install lita</kbd></p>
+            <p>Once Lita is installed, create a new Lita project with this shell command: <kbd>lita new</kbd></p>
             <p>This will generate a new directory called "lita" with a Gemfile and Lita configuration file, which is all you need to configure and run Lita.</p>
-            <p>For a full list of possible invocations of the <code>lita</code> command, run <code>lita help</code>.</p>
+            <p>For a full list of possible invocations of the <kbd>lita</kbd> command, run <kbd>lita help</kbd>.</p>
             <div class='alert alert-info'>
               <strong>Note:</strong>
-              If you are running Lita on JRuby, you'll need to use Ruby 2.0 mode, by invoking lita with <code>jruby --2.0 -S lita</code> or setting the environment variable <code>JRUBY_OPTS</code> to <code>--2.0</code>
+              If you are running Lita on JRuby, you'll need to use Ruby 2.0 mode, by invoking lita with <kbd>jruby --2.0 -S lita</kbd> or setting the environment variable <var>JRUBY_OPTS</var> to <var>--2.0</var>
             </div>
           </div>
         </div>

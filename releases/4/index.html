@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href="/images/favicon.ico" rel="icon" type="image/ico" />
+    <title>Lita 4.0 - Lita.io</title>
+    <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
+    <link href="/stylesheets/application-b6900e68.css" rel="stylesheet" type="text/css" />
+    <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-5500916-13', 'lita.io');ga('send', 'pageview');</script>
+  </head>
+  <body>
+    <nav class='navbar navbar-default navbar-static-top navbar-inverse' role='navigation'>
+      <div class='container'>
+        <a class="navbar-brand hidden-xs" href="/">Lita Documentation</a>
+        <ul class='nav navbar-nav navbar-right'>
+          <li class='dropdown'>
+            <a href='/getting-started/'>
+              Getting Started
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/getting-started/">Overview</a></li>
+              <li><a href="/getting-started/installation/">Installation</a></li>
+              <li><a href="/getting-started/plugins/">Plugins</a></li>
+              <li><a href="/getting-started/configuration/">Configuration</a></li>
+              <li><a href="/getting-started/usage/">Usage</a></li>
+              <li><a href="/getting-started/deployment/">Deployment</a></li>
+              <li><a href="/getting-started/versioning-policy/">Versioning Policy</a></li>
+            </ul>
+          </li>
+          <li class='dropdown'>
+            <a href='/plugin-authoring/'>
+              Plugin Authoring
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/plugin-authoring/">Overview</a></li>
+              <li><a href="/plugin-authoring/adapters/">Adapters</a></li>
+              <li><a href="/plugin-authoring/handlers/">Handlers</a></li>
+              <li><a href="/plugin-authoring/events/">Events</a></li>
+              <li><a href="/plugin-authoring/localization/">Localization</a></li>
+              <li><a href="/plugin-authoring/extensions/">Extensions</a></li>
+              <li><a href="/plugin-authoring/testing/">Testing</a></li>
+              <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
+            </ul>
+          </li>
+          <li class='dropdown'>
+            <a href='/releases/'>
+              Releases
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/releases/4/">Lita 4</a></li>
+              <li><a href="/releases/3/">Lita 3</a></li>
+            </ul>
+          </li>
+          <li class='navbar-link'><a href="https://www.lita.io/">Lita.io <span class="glyphicon glyphicon-arrow-right"></span></a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class='content'>
+      <div class='container'>
+        <div class='page-header'>
+          <h1>Lita 4.0</h1>
+        </div>
+        <div class='row'>
+          <div class='col-md-3'>
+            <nav>
+              <ul class='nav nav-stacked'>
+                <li><a href="/releases/4/">Lita 4</a></li>
+                <li><a href="/releases/3/">Lita 3</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class='col-md-9'>
+            <div class='page-header first-heading'>
+              <h2>Release announcement</h2>
+            </div>
+            <p>Version 4.0 of Lita, the Ruby chat bot framework, has been released. It contains several new features and improvements for both users and plugin developers. If you're brand new to Lita, you can install it by running <code>gem install lita</code> and learn to use it on the <a href="/getting-started/">getting started</a> page. Otherwise, read on for all the changes in the latest version.</p>
+            <h3>Feature overview</h3>
+            <ul>
+              <li>New configuration system with support for data type validation, custom validations, and nested attributes.</li>
+              <li>Rack middleware can now be added to the built-in web server.</li>
+              <li>Handler plugins can be created without inheriting from <code>Lita::Handler</code> by using mixins for only the desired functionality.</li>
+              <li>Handlers can manually set their Redis namespace, allowing complicated plugins to span across multiple classes while still sharing the same data store.</li>
+              <li>Callbacks for chat routes, HTTP routes, and events can be supplied as a block or callable object rather than the name of an instance method to invoke.</li>
+              <li>Both adapters and handlers can be created by passing a block to <code>Lita.register_adapter</code> and <code>Lita.register_handler</code>, respectively.</li>
+              <li>Messages that don't match any handler routes will now trigger an <code>:unhandled_message</code> event.</li>
+              <li>New RSpec matchers for all types of routes with authorization group support, improved syntax and additional functionality.</li>
+              <li>Easily test HTTP routes with the new <code>http</code> helper method for RSpec.</li>
+              <li>New authorization methods to make management and testing of authorization groups easier.</li>
+              <li>Major refactoring to reduce reliance on global state, offering safer, more predictable programming and testing.</li>
+              <li>Improved failure detection and messaging for Redis and the built-in web server.</li>
+            </ul>
+            <p>The guides on the documentation site have also been greatly improved.</p>
+            <h3>Upgrading for Lita users</h3>
+            <p>Lita 4 is completely backwards compatible for users. All existing functionality and plugins will continue to work. However, Lita 4 introduces a new configuration system, and a few things will need to change in your <code>lita_config.rb</code> file as the plugins you use begin to take advantage of features from Lita 4. Most configuration will remain unchanged, but a couple of attributes will emit deprecation warnings until they are updated to be compatible with the new style. These attributes are:</p>
+            <ul>
+              <li>
+                <p>
+                  <strong>config.adapter</strong>
+                </p>
+                <p>This attribute has been deprecated in favor of <code>config.adapters</code>, which has a separate attribute for each adapter by name, just as <code>config.handlers</code> does. Existing versions of adapters will continue to read from the original <code>config.adapter</code> attribute, but once a version of the adapter you're using is released that uses the new system, you'll need to update your configuration accordingly.</p>
+                <p>Example: Using the HipChat adapter, <code>config.adapter.jid = "12345_123456@chat.hipchat.com"</code> would become <code>config.adapters.hipchat.jid = "12345_123456@chat.hipchat.com"</code>.</p>
+              </li>
+              <li>
+                <p>
+                  <strong>config.redis</strong>
+                </p>
+                <p>The redis configuration attribute is now a hash. Lita 4 will continue to support struct-style access, but only hash-style access will be supported in Lita 5, so you should update now.</p>
+                <p>Example: <code>config.redis.host = "redis.example.com"</code> will become <code>config.redis[:host] = "redis.example.com"</code></p>
+              </li>
+            </ul>
+            <p>In addition to these configuration changes, Lita's built-in daemonization feature has been deprecated without replacement. Instead, daemonization of your Lita process should be done using dedicated process management tools for your operating system. Popular choices are <a href="http://www.freedesktop.org/wiki/Software/systemd/">systemd</a>, <a href="http://upstart.ubuntu.com/">Upstart</a>, and <a href="http://smarden.org/runit/">runit</a>. Lita's built-in daemonization will be removed completely in Lita 5. For more detail on the reasons behind this change, Mike Perham's <a href="http://www.mikeperham.com/2014/09/22/dont-daemonize-your-daemons/">Don't Daemonize Your Daemons!</a> is good reading.</p>
+            <h3>Upgrading for plugin developers</h3>
+            <p>In accordance with Lita's <a href="/getting-started/versioning-policy/">versioning policy</a>, Lita 4's only breaking change is the removal of one API that was already deprecated in Lita 3:</p>
+            <ul>
+              <li>
+                <p>
+                  <strong>Lita::User.find</strong>
+                </p>
+                <p>This method was an alias for <code>Lita::User.create</code>, but had a misleading name, so it was deprecated in Lita 3. It has been removed completely in Lita 4. If you have any code that is still using <code>find</code>, change it to using <code>create</code> if you are creating a user, and one of the <code>find_by_*</code> methods if you're looking up an existing user.</p>
+              </li>
+            </ul>
+            <p>Although this is the only breaking change in Lita 4, the new version introduces several new deprecations. All of these APIs will continue to work for Lita 4, but will be removed in Lita 5, so you should upgrade your plugins for future compatibility. The easiest way to upgrade your plugins is to change the code to use the Lita 4 versions of the deprecated APIs, then release a new gem with a dependency on Lita 4 or greater. If you want to make your plugin compatible with both the old and new APIs so that Lita 4 is not required to use your plugin, your plugin code should use multiple code paths, one for each deprecated API. It is recommended to take the easier approach, to reduce the complexity of your plugin code and help move users forward. After all, they can continue to use the existing version of your plugin if they aren't ready to upgrade to Lita 4.</p>
+            <p>The following APIs are now deprecated:</p>
+            <ul>
+              <li>
+                <p>
+                  <strong>Lita::Adapter.require_config</strong>
+                </p>
+                <p>Lita 4 introduces a new, more powerful configuration system that is used by both adapters and handlers. While <code>require_config</code> only caused Lita to validate that a configuration attribute was set, the new system has more capabilities.</p>
+                <p>Example: <code>require_config(:foo)</code> will simply change to <code>config(:foo)</code>. Each attribute must be specified with a separate call to <code>config</code>.</p>
+              </li>
+              <li>
+                <p>
+                  <strong>Lita::Adapter.required_configs</strong>
+                </p>
+                <p>This attribute returns an array of required configuration attributes as set with <code>require_config</code>. If for some reason you were accessing this, you'll want to use <code>configuration_builder</code> instead, although that returns a <code>Lita::ConfigurationBuilder</code> object rather than an array of simple values.</p>
+              </li>
+              <li>
+                <p>
+                  <strong>Lita.config.adapter</strong>
+                </p>
+                <p>Under the new configuration system, each adapter has its own configuration object under <code>Lita.config.adapters</code>, just like handlers always have. Configuration attributes defined using <code>Lita::Adapter.config</code> will be found at <code>Lita.config.adapters.your_adapter_namespace.your_configuration_attribute</code>.</p>
+              </li>
+              <li>
+                <p>
+                  <strong>Lita::Handler.default_config</strong>
+                </p>
+                <p>In Lita 3, handlers defined configuration attributes by defining the class method <code>default_config</code>, which was passed a <code>Lita::Config</code> object that behaved like an <code>OpenStruct</code>. This code should be converted to use the configuration system, which is achieved by callilng the class method <code>config</code> for each desired configuration attribute. The new system is more strict, so all configuration attributes must be declared, even if their default value is <code>nil</code>.</p>
+                <p>Example:</p>
+                <p>Before:</p>
+                <pre><code class='ruby'>def self.default_config(config)&#x000A;  config.use_special_mode = false&#x000A;  config.custom_value = nil&#x000A;end</code></pre>
+                <p>After:</p>
+                <pre><code class='ruby'>config :use_special_mode, default: false&#x000A;config :custom_value</code></pre>
+                <p>In either case, the handler's configuration can be accessed at runtime with <code>Lita::Handler#config</code>. If both types of configuration declarations are present, the old style will take precedence, for backwards compatibility.</p>
+              </li>
+              <li>
+                <p>
+                  <strong>Lita::Config</strong>
+                </p>
+                <p>This entire class is deprecated with the introduction of the new configuration system. If you were using this class directly before, you might want to consider using a hash or <code>OpenStruct</code> from the standard library. If you have a plugin that needs nested configuration attributes, the new configuration system's DSL allows for this without having to manually instantiate a configuration object.</p>
+              </li>
+              <li>
+                <p>
+                  <strong>Lita::Authorization class methods</strong>
+                </p>
+                <p>The authorization module is now a class, and all the methods are instance methods that use configuration derived from the currently running robot. Code should be upgraded to access authorization via the robot.</p>
+                <p>Example: <code>Lita::Authorization.user_in_group?(user, :group)</code> would now be <code>robot.auth.user_in_group?(user, :group)</code>.</p>
+              </li>
+              <li>
+                <p>
+                  <strong>Lita::RSpec routing matchers</strong>
+                </p>
+                <p>Lita 4's RSpec routing matchers use a new syntax that is more akin to RSpec style. Rather than enumerate each possible usage here, the following code block will demonstrate a few examples:</p>
+                <pre><code class='ruby'>### Lita 3&#x000A;&#x000A;# passes but doesn't actually test anything&#x000A;it { routes("foo") }&#x000A;&#x000A;it { routes("foo").to(:bar) }&#x000A;&#x000A;# bypasses the authorization protected_method requires&#x000A;it { routes("foo").to(:protected_method) }&#x000A;&#x000A;it { doesnt_route("foo").to(:bar) }&#x000A;&#x000A;### Lita 4&#x000A;&#x000A;# actually ensures that the message matches at least one route&#x000A;it { is_expected.to route("foo") }&#x000A;&#x000A;it { is_expected.to route("foo").to(:bar) }&#x000A;&#x000A;# requires the authorization group to be specified&#x000A;it { is_expected.to route("foo").to(:protected_method).with_authorization_for(:baz_admins) }&#x000A;&#x000A;# negating the expectation doesn't change the name of the matcher&#x000A;it { is_expected.not_to route("foo").to(:bar) }</code></pre>
+                <p>As you can see from the example above, the new matchers don't give a false positive when the name of the route is not supplied. Lita 3's routing matchers also ignored the authorization system, while Lita 4's do not. In order to test a route that requires authorization, use the <code>with_authorization_for</code> fluent interface. The routing syntax for testing HTTP routes and event handlers follows a similar style to the chat routes. When you run your test suite, the deprecation warnings will tell you exactly what the new syntax is whenever the old syntax is encountered. The old syntax will be removed in Lita 5.</p>
+              </li>
+            </ul>
+            <p>Lastly, Lita 4 includes some internal API changes that don't cause runtime functionality to break, but may cause tests written against Lita 3 to fail if they were directly using or stubbing some of these old APIs. To make the transition smooth, Lita 4 has a special mode called "version 3 compatibility mode" that activates the old code paths while the test suite is running. Compatibility mode is turned on by default. When you're ready to upgrade your test suite, turn it off by adding the following code to <code>spec/spec_helper.rb</code>:</p>
+            <pre><code class='ruby'>require "lita/rspec"&#x000A;&#x000A;Lita.version_3_compatibility_mode = false&#x000A;</code></pre>
+            <p>This may cause some tests to begin failing that pass with compatibility mode on. The cause of each failure will be one of the following:</p>
+            <ul>
+              <li>Your code is using <code>Lita::Adapter.require_config</code>. Use <code>Lita::Adapter.config</code> instead.</li>
+              <li>Your code is stubbing one of the class methods on <code>Lita::Authorization</code>. If you're doing that so that a test behaves as though a user is in a particular authorization group, you can use <code>robot.auth.add_user_to_group!(user, group)</code> instead. This new bang method does not require a "requesting user," making the programmatic management of authorization groups much simpler.</li>
+              <li>
+                <p>Your code directly accesses or stubs class methods on the top-level Lita module. Most of the global state previously stored only on this object is now stored using a <code>Lita::Registry</code> object. Instead of resetting the state on the <code>Lita</code> module for each test, a fresh registry is used for each test. You can access the test's registry with the <code>registry</code> method from any test. Compatibility mode works by using the real <code>Lita</code> object instead of a fresh registry.</p>
+                <p>Example: <code>Lita.register_handler(MyTestHandler)</code> should change to <code>registry.register_handler(MyTestHandler)</code>.</p>
+              </li>
+            </ul>
+            <p>Lita 3 compatibility mode will be removed in Lita 5, and only the new code paths will work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class='container'>
+        <ul class='nav navbar-nav'>
+          <li><a href="https://github.com/jimmycuadra/lita">GitHub</a></li>
+          <li><a href="https://twitter.com/litachatbot">Twitter</a></li>
+          <li><a href="https://groups.google.com/group/litaio">Mailing List</a></li>
+          <li><a href="http://webchat.freenode.net/?channels=lita.io">IRC</a></li>
+        </ul>
+        <ul class='nav navbar nav navbar-right'>
+          <li>
+            <div class='navbar-text'>© 2014 Lita.io</div>
+          </li>
+        </ul>
+      </div>
+    </footer>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script><script src="/javascripts/application-8ea00ca6.js" type="text/javascript"></script>
+  </body>
+</html>

@@ -6,15 +6,13 @@
     <link href="/images/favicon.ico" rel="icon" type="image/ico" />
     <title>Plugin Authoring: Localization - Lita.io</title>
     <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
-    <link href="/stylesheets/application-adb34666.css" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/application-b6900e68.css" rel="stylesheet" type="text/css" />
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-5500916-13', 'lita.io');ga('send', 'pageview');</script>
   </head>
   <body>
     <nav class='navbar navbar-default navbar-static-top navbar-inverse' role='navigation'>
       <div class='container'>
         <a class="navbar-brand hidden-xs" href="/">Lita Documentation</a>
-        <div class='hidden-xs'><a class="btn btn-default navbar-btn navbar-right" href="https://www.lita.io/">Lita.io</a></div>
-        <div class='navbar-text navbar-right hidden-xs'></div>
         <ul class='nav navbar-nav navbar-right'>
           <li class='dropdown'>
             <a href='/getting-started/'>
@@ -47,6 +45,17 @@
               <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
             </ul>
           </li>
+          <li class='dropdown'>
+            <a href='/releases/'>
+              Releases
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/releases/4/">Lita 4</a></li>
+              <li><a href="/releases/3/">Lita 3</a></li>
+            </ul>
+          </li>
+          <li class='navbar-link'><a href="https://www.lita.io/">Lita.io <span class="glyphicon glyphicon-arrow-right"></span></a></li>
         </ul>
       </div>
     </nav>
@@ -59,11 +68,21 @@
           <div class='col-md-3'>
             <nav>
               <ul class='nav nav-stacked'>
-                <li><a href="/plugin-authoring/">Overview</a></li>
+                <li>
+                  <a href="/plugin-authoring/">Overview</a>
+                  <ul>
+                    <li><a href="/plugin-authoring/#plugin-types">Plugin types</a></li>
+                    <li><a href="/plugin-authoring/#plugin-loading">Plugin loading</a></li>
+                  </ul>
+                </li>
                 <li>
                   <a href="/plugin-authoring/adapters/">Adapters</a>
                   <ul>
-                    <li><a href="/plugin-authoring/adapters/#examples">Examples</a></li>
+                    <li><a href="/plugin-authoring/adapters/#generating">Generating an adapter</a></li>
+                    <li><a href="/plugin-authoring/adapters/#configuration">Configuration</a></li>
+                    <li><a href="/plugin-authoring/adapters/#required-methods">Required methods</a></li>
+                    <li><a href="/plugin-authoring/adapters/#helper-methods">Helper methods</a></li>
+                    <li><a href="/plugin-authoring/adapters/#block-syntax">Block syntax</a></li>
                   </ul>
                 </li>
                 <li>
@@ -71,10 +90,16 @@
                   <ul>
                     <li><a href="/plugin-authoring/handlers/#chat-routes">Chat routes</a></li>
                     <li><a href="/plugin-authoring/handlers/#http-routes">HTTP routes</a></li>
+                    <li><a href="/plugin-authoring/handlers/#event-routes">Event routes</a></li>
+                    <li><a href="/plugin-authoring/handlers/#mixins">Mixins</a></li>
+                    <li><a href="/plugin-authoring/handlers/#helper-methods">Helper methods</a></li>
                     <li><a href="/plugin-authoring/handlers/#timers">Timers</a></li>
                     <li><a href="/plugin-authoring/handlers/#configuration">Configuration</a></li>
                     <li><a href="/plugin-authoring/handlers/#examples">Examples</a></li>
                   </ul>
+                </li>
+                <li>
+                  <a href="/plugin-authoring/configuration/">Configuration</a>
                 </li>
                 <li>
                   <a href="/plugin-authoring/events/">Events</a>
@@ -93,6 +118,7 @@
                 <li>
                   <a href="/plugin-authoring/testing/">Testing</a>
                   <ul>
+                    <li><a href="/plugin-authoring/testing/#setup">Setup</a></li>
                     <li><a href="/plugin-authoring/testing/#testing-adapters">Testing adapters</a></li>
                     <li><a href="/plugin-authoring/testing/#testing-handlers">Testing handlers</a></li>
                     <li><a href="/plugin-authoring/testing/#testing-routes">Testing routes</a></li>
@@ -109,10 +135,10 @@
             </div>
             <p>Lita is internationalized, and you're encouraged to extract all language-specific strings into a locale file instead of hardcoding them into your Ruby code. Plugins created with Lita's generator make this very easy to do. In the root of your plugin's directory, you will find a <code>locales</code> directory with an <code>en.yml</code> file. Inside that file, you'll see <a href="http://www.yaml.org/">YAML</a> like this:</p>
             <pre><code>en:&#x000A;  lita:&#x000A;    handlers:&#x000A;      your_handler_name:&#x000A;</code></pre>
-            <p>Language strings should be inserted as key/value pairs under your Handler's namespace in the YAML file. These keys can then be translated at runtime by using the <code>translate</code> method (aliased to <code>t</code>) available at both the class and instance level inside your plugin. If we take a look at the route example from before:</p>
-            <pre><code class='ruby'>route /^echo\s+(.+)/, :echo, command: true, restrict_to: [:testers, :committers], help: {&#x000A;  "echo TEXT" => "Replies back with TEXT."&#x000A;}&#x000A;</code></pre>
+            <p>If your plugin is an adapter or extension, it will instead be under the <code>adapters</code> or <code>extensions</code>namespace, respectively. Language strings should be inserted as key/value pairs under your plugin's namespace in the YAML file. These keys can then be translated at runtime by using the <code>translate</code> method (aliased to <code>t</code>) available at both the class and instance level inside your adapter or handler. If we take a look at the route example from before:</p>
+            <pre><code class='ruby'>route(/^echo\s+(.+)/, :echo, command: true, restrict_to: [:testers, :committers], help: {&#x000A;  "echo TEXT" => "Replies back with TEXT."&#x000A;})&#x000A;</code></pre>
             <p>An internationalized version of this would look like this:</p>
-            <pre><code class='ruby'>route /^echo\s+(.+)/, :echo, command: true, restrict_to: [:testers, :committers], help: {&#x000A;  t("help.echo_key") => t("help.echo_value")&#x000A;}&#x000A;</code></pre>
+            <pre><code class='ruby'>route(/^echo\s+(.+)/, :echo, command: true, restrict_to: [:testers, :committers], help: {&#x000A;  t("help.echo_key") => t("help.echo_value")&#x000A;})&#x000A;</code></pre>
             <p>With <code>en.yml</code> filled in accordingly:</p>
             <pre><code>en:&#x000A;  lita:&#x000A;    handlers:&#x000A;      your_handler_name:&#x000A;        help:&#x000A;          echo_key: echo FOO&#x000A;          echo_value: Replies back with FOO.&#x000A;</code></pre>
             <p>Note that the period in the translation's key represents a nested level in the YAML file.</p>

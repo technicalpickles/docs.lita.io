@@ -6,15 +6,13 @@
     <link href="/images/favicon.ico" rel="icon" type="image/ico" />
     <title>Plugin Authoring - Lita.io</title>
     <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
-    <link href="/stylesheets/application-adb34666.css" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/application-b6900e68.css" rel="stylesheet" type="text/css" />
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-5500916-13', 'lita.io');ga('send', 'pageview');</script>
   </head>
   <body>
     <nav class='navbar navbar-default navbar-static-top navbar-inverse' role='navigation'>
       <div class='container'>
         <a class="navbar-brand hidden-xs" href="/">Lita Documentation</a>
-        <div class='hidden-xs'><a class="btn btn-default navbar-btn navbar-right" href="https://www.lita.io/">Lita.io</a></div>
-        <div class='navbar-text navbar-right hidden-xs'></div>
         <ul class='nav navbar-nav navbar-right'>
           <li class='dropdown'>
             <a href='/getting-started/'>
@@ -47,6 +45,17 @@
               <li><a href="/plugin-authoring/publishing/">Publishing</a></li>
             </ul>
           </li>
+          <li class='dropdown'>
+            <a href='/releases/'>
+              Releases
+              <b class='caret'></b>
+            </a>
+            <ul class='dropdown-menu'>
+              <li><a href="/releases/4/">Lita 4</a></li>
+              <li><a href="/releases/3/">Lita 3</a></li>
+            </ul>
+          </li>
+          <li class='navbar-link'><a href="https://www.lita.io/">Lita.io <span class="glyphicon glyphicon-arrow-right"></span></a></li>
         </ul>
       </div>
     </nav>
@@ -59,11 +68,21 @@
           <div class='col-md-3'>
             <nav>
               <ul class='nav nav-stacked'>
-                <li><a href="/plugin-authoring/">Overview</a></li>
+                <li>
+                  <a href="/plugin-authoring/">Overview</a>
+                  <ul>
+                    <li><a href="/plugin-authoring/#plugin-types">Plugin types</a></li>
+                    <li><a href="/plugin-authoring/#plugin-loading">Plugin loading</a></li>
+                  </ul>
+                </li>
                 <li>
                   <a href="/plugin-authoring/adapters/">Adapters</a>
                   <ul>
-                    <li><a href="/plugin-authoring/adapters/#examples">Examples</a></li>
+                    <li><a href="/plugin-authoring/adapters/#generating">Generating an adapter</a></li>
+                    <li><a href="/plugin-authoring/adapters/#configuration">Configuration</a></li>
+                    <li><a href="/plugin-authoring/adapters/#required-methods">Required methods</a></li>
+                    <li><a href="/plugin-authoring/adapters/#helper-methods">Helper methods</a></li>
+                    <li><a href="/plugin-authoring/adapters/#block-syntax">Block syntax</a></li>
                   </ul>
                 </li>
                 <li>
@@ -71,10 +90,16 @@
                   <ul>
                     <li><a href="/plugin-authoring/handlers/#chat-routes">Chat routes</a></li>
                     <li><a href="/plugin-authoring/handlers/#http-routes">HTTP routes</a></li>
+                    <li><a href="/plugin-authoring/handlers/#event-routes">Event routes</a></li>
+                    <li><a href="/plugin-authoring/handlers/#mixins">Mixins</a></li>
+                    <li><a href="/plugin-authoring/handlers/#helper-methods">Helper methods</a></li>
                     <li><a href="/plugin-authoring/handlers/#timers">Timers</a></li>
                     <li><a href="/plugin-authoring/handlers/#configuration">Configuration</a></li>
                     <li><a href="/plugin-authoring/handlers/#examples">Examples</a></li>
                   </ul>
+                </li>
+                <li>
+                  <a href="/plugin-authoring/configuration/">Configuration</a>
                 </li>
                 <li>
                   <a href="/plugin-authoring/events/">Events</a>
@@ -93,6 +118,7 @@
                 <li>
                   <a href="/plugin-authoring/testing/">Testing</a>
                   <ul>
+                    <li><a href="/plugin-authoring/testing/#setup">Setup</a></li>
                     <li><a href="/plugin-authoring/testing/#testing-adapters">Testing adapters</a></li>
                     <li><a href="/plugin-authoring/testing/#testing-handlers">Testing handlers</a></li>
                     <li><a href="/plugin-authoring/testing/#testing-routes">Testing routes</a></li>
@@ -108,8 +134,11 @@
               <h2>Extensions</h2>
             </div>
             <p>An extension is a plugin that adds new functionality to Lita's core in order to extend the capabilities of adapters and handlers. Unlike adapters and handlers, extensions are not used in a user's Lita project directly, but are dependencies of adapter and handler gems.</p>
-            <p>To create a new extension plugin, run the following command in your shell:</p>
-            <pre><code>lita extension NAME-OF-YOUR-EXTENSION</code></pre>
+            <p>To create a new extension plugin, run the following command in your shell: <kbd>lita extension <var>NAME_OF_YOUR_EXTENSION</var></kbd>. This generates the files necessary to build an extension plugin and publish it as a Ruby gem.</p>
+            <div class='alert alert-info'>
+              <strong>Note:</strong>
+              Extensions are an advanced topic and most of the time you won't need to write them yourself.
+            </div>
             <h3 id='hooks'>Hooks</h3>
             <p>Hooks are the primary mechanism for extensions to add new functionality to Lita's core. They are similar to the event system, allowing objects to register themselves with different hook names which get called when that hook is triggered. A callback object is registered using <code>Lita.register_hook</code>. The callback object is any object that responds to <code>:call</code> and accepts a single hash of payload data as an argument.</p>
             <p>The available hooks are as follows:</p>
@@ -155,11 +184,11 @@
             <p>Here is an extension that prevents routes with the custom <code>:password_protected</code> option from matching incoming messages unless they contain a secret password:</p>
             <pre><code class='ruby'>module Lita&#x000A;  module Extensions&#x000A;    class PasswordProtection&#x000A;      def self.call(payload)&#x000A;        route = payload[:route]&#x000A;        message = payload[:message]&#x000A;&#x000A;        if route.extensions[:password_protected] && !message.body.include?("secret")&#x000A;          return false&#x000A;        else&#x000A;          return true&#x000A;        end&#x000A;      end&#x000A;    end&#x000A;&#x000A;    Lita.register_hook(:validate_route, PasswordProtection)&#x000A;  end&#x000A;end&#x000A;</code></pre>
             <p>To take advantage of this extension, a handler would simply add the option in a route definition:</p>
-            <pre><code class='ruby'>route /^dangerous/i, :dangerous_action, command: true, password_protected: true&#x000A;</code></pre>
+            <pre><code class='ruby'>route(/^dangerous/i, :dangerous_action, command: true, password_protected: true)&#x000A;</code></pre>
             <p>Here is an extension that adds the SHA1 hex digest of the incoming message's body to the response object passed to the handler:</p>
             <pre><code class='ruby'>require "digest/sha1"&#x000A;&#x000A;module Lita&#x000A;  module Extensions&#x000A;    class MessageSHA&#x000A;      def self.call(payload)&#x000A;        response = payload[:response]&#x000A;&#x000A;        response.extensions[:sha] = Digest::SHA1.hexdigest(response.message.body)&#x000A;      end&#x000A;    end&#x000A;&#x000A;    Lita.register_hook(:trigger_route, MessageSHA)&#x000A;  end&#x000A;end&#x000A;</code></pre>
             <p>To take advantage of this extension, a handler just needs to access the value added to the response object:</p>
-            <pre><code class='ruby'>route /^sha/i, :sha, command: true&#x000A;&#x000A;def sha(response)&#x000A;  response.reply("The SHA1 of your message is: #{response.extensions[:sha]}.")&#x000A;end&#x000A;</code></pre>
+            <pre><code class='ruby'>route(/^sha/i, :sha, command: true)&#x000A;&#x000A;def sha(response)&#x000A;  response.reply("The SHA1 of your message is: #{response.extensions[:sha]}.")&#x000A;end&#x000A;</code></pre>
             For a more detailed example that makes use of both hooks and custom route options, check out <a href="https://github.com/jimmycuadra/lita-keyword-arguments">lita-keyword-arguments</a>.
           </div>
         </div>

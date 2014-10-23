@@ -4,7 +4,7 @@
     <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
     <meta content='width=device-width, initial-scale=1.0' name='viewport'>
     <link href="/images/favicon.ico" rel="icon" type="image/ico" />
-    <title>Plugin Authoring: Events - Lita.io</title>
+    <title>Plugin Authoring: Configuration - Lita.io</title>
     <meta content='Documentation for Lita, a chat bot written in Ruby.' name='description'>
     <link href="/stylesheets/application-b6900e68.css" rel="stylesheet" type="text/css" />
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-5500916-13', 'lita.io');ga('send', 'pageview');</script>
@@ -131,39 +131,63 @@
           </div>
           <div class='col-md-9'>
             <div class='page-header first-heading'>
-              <h2>Events</h2>
+              <h2>Configuration</h2>
             </div>
-            <p>The <code>Lita::Robot</code> object serves as a global event bus in Lita's runtime. Any Lita code can trigger an event on the robot, and handler plugins can define event callbacks which subscribe to those events by name. When an event is triggered, the calling code can pass a payload hash with any arbitrary data it wishes the receiving code to have.</p>
-            <p>To trigger an event from any Lita code with access to the currently running robot:</p>
-            <pre><code class='ruby'>robot.trigger(:some_event_happened, foo: :bar, baz: :blah)</code></pre>
-            <p>See the <a href="/plugin-authoring/handlers/#event-routes">handlers guide</a> for details on how handlers can subscribe to events.</p>
-            <h3 id='built-in-events'>Built-in events</h3>
-            <p>There are a few events which the core Lita framework triggers:</p>
+            <p>Adapters and handlers share a common system for specifying configuration attributes. These attributes are exposed to users on the main <code>Lita.config</code> object and can be used to change the behavior or specify data that a plugin should use at runtime. Configuration attributes are automatically namespaced with the plugin's type and "namespace" value. For example, configuration attributes defined by an adapter called <code>Fancychat</code> would be found at <code>Lita.config.adapters.fancychat</code> and configuration attributes defined by a handler named <code>GuideExamples</code> would be found at <code>Lita.config.handlers.guide_examples</code>.</p>
+            <p>If you're writing a plugin that's significantly complex, and you want to separate it into multiple classes, you can force the different classes to share the same configuration attribute and namespaced data store in Redis by using the class-level <code>namespace</code> method, providing a string namespace:</p>
+            <pre><code class='ruby'>class MyPluginExtraClass &lt; Lita::Handler&#x000A;  namespace "my_plugin"&#x000A;end&#x000A;</code></pre>
+            <p>If you use the block form for defining a plugin, the namespace is determined by the first argument to the registration method:</p>
+            <pre><code class='ruby'>Lita.register_handler(:my_plugin) do&#x000A;  # ...&#x000A;end&#x000A;</code></pre>
+            <p>Configuration attributes themselves are defined using the class-level <code>config</code> method. This method takes one mandatory argument, a Ruby symbol that will serve as the name of the attribute.</p>
+            <pre><code class='ruby'>class MyPlugin &lt; Lita::Handler&#x000A;  config :api_key&#x000A;end&#x000A;</code></pre>
+            <p>The above code would create an attribute at <code>Lita.config.handlers.my_plugin.api_key</code>. Each attribute must be defined with a separate call to <code>config</code>. The <code>config</code> method takes several options which provide additional control over the attribute:</p>
             <table class='table table-bordered'>
               <tr>
                 <th>Name</th>
+                <th>Type</th>
                 <th>Description</th>
               </tr>
               <tr>
                 <td>
-                  <code>:loaded</code>
+                  <code>:type</code>
                 </td>
-                <td>Fired when the <code>Lita::Robot</code> object has been initialized during start up. This can be used as a hook point for handlers to define routes that depend on user configuration not known until runtime, run migrations on data in Redis, or other start up tasks.</td>
+                <td>Any object</td>
+                <td>Specifies a requirement that the value provided by the user must be of the given data type. If it isn't, Lita will abort with an error message during start up.</td>
               </tr>
               <tr>
                 <td>
-                  <code>:shut_down_started</code>
+                  <code>:types</code>
                 </td>
-                <td>Fired when the robot first begins shutting down.</td>
+                <td>
+                  <code>Array</code>
+                </td>
+                <td>The same as <code>:type</code>, but used to specify that the value can be any of the types in the array. <code>:type</code> and <code>:types</code> actually both accept either one type or an array of types, so use whichever option name you think reads better.</td>
               </tr>
               <tr>
                 <td>
-                  <code>:shut_down_completed</code>
+                  <code>:required</code>
                 </td>
-                <td>Fired when the robot has finished shutting down both the built-in web server and the chat adapter.</td>
+                <td>Boolean</td>
+                <td>Whether or not the attribute must be specified by the user. If a required attribute is not given a value, Lita will abort with an error message during start up.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>:default</code>
+                </td>
+                <td>Any object</td>
+                <td>The initial value of the attribute. If a value is not given using this option, the attribute's initial value will be <code>nil</code>.</td>
               </tr>
             </table>
-            <p>Adapters are encouraged to trigger a <code>:connected</code> event so that other plugins can run set up code that needs to be done at runtime.</p>
+            <p>Configuration attributes can also be nested infinitely deep. If you want an attribute to have sub-attributes, pass <code>config</code> a block and call the method again inside the block:</p>
+            <pre><code class='ruby'>class MyPlugin &lt; Lita::Handler&#x000A;  config :api_credentials do&#x000A;    config :username, type: String&#x000A;    config :password, type: String&#x000A;  end&#x000A;</code></pre>
+            <p>This will generate two attributes, both of which must be strings: <code>Lita.config.handlers.my_plugin.api_credentials.username</code> and <code>Lita.config.handlers.my_plugin.api_credentials.password</code>. If a configuration attribute has any child attributes, it will become a "container" object, and any options provided in defining the parent attribute will not have any effect.</p>
+            <p>In addition to type checking, you can also specify your own validation for a configuration attribute. Within the block passed to the <code>config</code> method, call the <code>validate</code> method. <code>validate</code> yields the attribute's value to a block. If the block returns a non-<code>nil</code> value, the attribute will fail validation and Lita will abort, using the block's return value as the reason. Here is an example:</p>
+            <pre><code class='ruby'>class MyPlugin &lt; Lita::Handler&#x000A;  config :api_token do&#x000A;    validate do |value|&#x000A;      "must be 10 characters" unless value.respond_to?(:size) && value.size == 10&#x000A;    end&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <p>Validation for nested attributes works in the same way.</p>
+            <div class='alert alert-warning'>
+              <strong>Important!</strong>
+              All the values in <code>Lita.config</code> are frozen at runtime. Consider them read only and wrap them with accessor methods in your plugins if you need their raw values to be manipulated in some way.
+            </div>
           </div>
         </div>
       </div>
